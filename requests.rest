@@ -1,3 +1,37 @@
 ###
+GET http://localhost:3000/
 
+###
 GET http://localhost:3000/post
+
+###
+GET http://localhost:3000/comments
+
+###
+GET http://localhost:3000/comments?id=12345
+
+###
+GET http://localhost:3000/comments/123
+
+###
+POST http://localhost:3000/comments
+Content-Type: application/json
+
+{
+    "id": "12345678",
+    "name": "John",
+    "message": "hello world"
+}
+
+###
+PUT http://localhost:3000/comments/12345678
+Content-Type: application/json
+
+{
+    "id": "12345678",
+    "name": "Itay",
+    "message": "hello world!!!"
+}
+
+###
+DELETE http://localhost:3000/comments/12345
