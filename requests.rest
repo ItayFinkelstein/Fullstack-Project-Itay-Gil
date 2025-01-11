@@ -8,19 +8,48 @@ GET http://localhost:3000/post
 GET http://localhost:3000/comments
 
 ###
-GET http://localhost:3000/comments?id=12345
+GET http://localhost:3000/comments?owner=Itay
+
+###
+GET http://localhost:3000/comments?owner=NOTItay
+
+###
+GET http://localhost:3000/comments?postId=12345
+
+###
+GET http://localhost:3000/comments?postId=12345&owner=Itay
+
+###
+GET http://localhost:3000/comments?postId=12345&owner=NOTItay
+
+###
+GET http://localhost:3000/comments?postId=123456789&owner=Itay
 
 ###
 GET http://localhost:3000/comments/123
+
+###
+GET http://localhost:3000/comments/67828e370ba9ad74f6700bea
 
 ###
 POST http://localhost:3000/comments
 Content-Type: application/json
 
 {
-    "id": "12345678",
-    "name": "John",
-    "message": "hello world"
+    "message": "hello world!!!",
+    "owner": "Itay",
+    "postId": "12345"
+}
+
+###
+POST http://localhost:3000/comments
+Content-Type: application/json
+
+{
+    "_id": "6782920ce39804cd14c2dfb0",
+    "message": "comment to delete",
+    "owner": "delete",
+    "postId": "9999999"
 }
 
 ###
@@ -28,10 +57,13 @@ PUT http://localhost:3000/comments/12345678
 Content-Type: application/json
 
 {
-    "id": "12345678",
-    "name": "Itay",
-    "message": "hello world!!!"
+    "message": "UPDATED!!!",
+    "owner": "test",
+    "postId": "12345678"
 }
 
 ###
 DELETE http://localhost:3000/comments/12345
+
+###
+DELETE http://localhost:3000/comments/6782920ce39804cd14c2dfb0
