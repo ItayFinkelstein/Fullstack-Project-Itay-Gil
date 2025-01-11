@@ -1,21 +1,16 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import bodyParser from 'body-parser';
-import indexRouter from './routes/index';
-import postRouter from './routes/post_routes';
-import commentRouter from './routes/comment_routes';
+import initApp from './server';
 
-dotenv.config();
-
-const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+const runApp = async () => {
+    try {
+        const app = await initApp();
+        app.listen(port, () => {
+            console.log(`Post and comment app listening to port ${port}`);
+        });
+    } catch (error) {
+        console.error("Failed to initialize the app: ", error);
+    }
+};
 
-app.use('/', indexRouter);
-app.use('/post', postRouter);
-app.use('/comments', commentRouter);
-
-app.listen(port, () => {
-    console.log(`Post and comment app listening to port ${port}`);
-});
+runApp();
