@@ -36,7 +36,7 @@ class BaseController<T> {
             try {
                 const items = await this.model.findById(idToFind);
                 if (items === null) {
-                    return res.status(404).send("not found");
+                    return res.status(404).send('Item not found');
                 } else {
                     return res.status(200).send(items);
                 }
@@ -62,12 +62,19 @@ class BaseController<T> {
     async updateItemById(req: Request, res: Response) {
         const itemIdToUpdate = req.params.id;
         const item = req.body;
+        if (Mongoose.prototype.isValidObjectId(itemIdToUpdate)) {
+            try {
+                const updatedItem = await this.model.findByIdAndUpdate(itemIdToUpdate, item, { new: true });
+                if (!updatedItem) {
+                    return res.status(404).send('Item not found');
+                }
 
-        try {
-            await this.model.findOneAndUpdate({ postId: itemIdToUpdate }, item);
-            res.status(200).send();
-        } catch (error) {
-            res.status(500).send(error);
+                res.status(200).send(updatedItem);
+            } catch (error) {
+                res.status(500).send(error);
+            }
+        } else {
+            return res.status(400).send("invalid ObjectId");
         }
     };
 
@@ -76,9 +83,15 @@ class BaseController<T> {
 
         if (Mongoose.prototype.isValidObjectId(itemIdToDelete)) {
             try {
-                await this.model.findByIdAndDelete(itemIdToDelete);
-                res.status(200).send();
+                const deletedItem = await this.model.findByIdAndDelete(req.params.id);
+                if (!deletedItem) {
+                    return res.status(404).send('Item not found');
+                }
+
+                res.status(200).send(`Item with id ${req.params.id} deleted`);
             } catch (error) {
+                console.log(error);
+                console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                 res.status(500).send(error);
             }
         } else {
