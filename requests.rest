@@ -5,6 +5,15 @@ GET http://localhost:3000/
 GET http://localhost:3000/post
 
 ###
+GET http://localhost:3000/post?owner=John
+
+###
+GET http://localhost:3000/post?owner=NonExistingOwner
+
+###
+GET http://localhost:3000/post?owner=David
+
+###
 GET http://localhost:3000/post?id=12345
 
 ###
@@ -15,8 +24,17 @@ POST http://localhost:3000/post
 Content-Type: application/json
 
 {
+    "owner": "David",
+    "message": "Hello people"
+}
+
+###
+POST http://localhost:3000/post
+Content-Type: application/json
+
+{
     "_id": "678ba58058ecb33d1473f93b",
-    "sender": "John",
+    "owner": "John",
     "message": "Hello people"
 }
 
@@ -26,7 +44,7 @@ Content-Type: application/json
 
 {
     "_id": "678ba58058ecb33d1473f93b",
-    "sender": "John",
+    "owner": "John",
     "message": "Tomorrow will be great"
 }
 

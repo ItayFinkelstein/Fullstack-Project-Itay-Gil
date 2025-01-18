@@ -63,7 +63,7 @@ class BaseController<T> {
 
             try {
                 const result = await this.model.findByIdAndUpdate(itemIdToUpdate, item, {new: true});
-                if (result !== null) {
+                if (result) {
                     res.status(200).send();
                 } else {
                     res.status(500).send("Item to update doesn't exist");
@@ -82,7 +82,7 @@ class BaseController<T> {
         if (Mongoose.prototype.isValidObjectId(itemIdToDelete)) {
             try {
                 const result = await this.model.findByIdAndDelete(itemIdToDelete);
-                if (result !== null) {
+                if (result) {
                     res.status(200).send();
                 } else {
                     res.status(500).send("Item to delete wasn't found");
