@@ -90,8 +90,6 @@ class BaseController<T> {
 
                 res.status(200).send(`Item with id ${req.params.id} deleted`);
             } catch (error) {
-                console.log(error);
-                console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
                 res.status(500).send(error);
             }
         } else {
