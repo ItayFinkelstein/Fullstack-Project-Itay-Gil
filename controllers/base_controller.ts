@@ -62,12 +62,16 @@ class BaseController<T> {
     async updateItemById(req: Request, res: Response) {
         const itemIdToUpdate = req.params.id;
         const item = req.body;
+        if (Mongoose.prototype.isValidObjectId(itemIdToUpdate)) {
 
-        try {
-            await this.model.findOneAndUpdate({ postId: itemIdToUpdate }, item);
-            res.status(200).send();
-        } catch (error) {
-            res.status(500).send(error);
+            try {
+                await this.model.findByIdAndUpdate(itemIdToUpdate, item, {new: true});
+                res.status(200).send();
+            } catch (error) {
+                res.status(500).send(error);
+            }
+        } else {
+            res.status(500).send("Item to update doesn't exist");
         }
     };
 

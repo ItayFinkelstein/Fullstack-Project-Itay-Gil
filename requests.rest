@@ -15,23 +15,23 @@ POST http://localhost:3000/post
 Content-Type: application/json
 
 {
-    "id": "12345678",
-    "name": "John",
-    "message": "hello world"
+    "_id": "678ba58058ecb33d1473f93b",
+    "sender": "John",
+    "message": "Hello people"
 }
 
 ###
-PUT http://localhost:3000/post/12345678
+PUT http://localhost:3000/post/678ba58058ecb33d1473f93b
 Content-Type: application/json
 
 {
-    "id": "12345678",
-    "name": "Itay",
-    "message": "hello world!!!"
+    "_id": "678ba58058ecb33d1473f93b",
+    "sender": "John",
+    "message": "Tomorrow will be great"
 }
 
 ###
-DELETE http://localhost:3000/post/12345
+DELETE http://localhost:3000/post/678ba58058ecb33d1473f93b
 
 ###
 GET http://localhost:3000/comments
@@ -82,7 +82,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/comments/12345678
+PUT http://localhost:3000/comments/6782920ce39804cd14c2dfb0
 Content-Type: application/json
 
 {
@@ -92,7 +92,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/comments/12345
+DELETE http://localhost:3000/comments/6782920ce39804cd14c2dfb0
 
 ###
 DELETE http://localhost:3000/comments/6782920ce39804cd14c2dfb0
