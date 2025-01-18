@@ -62,8 +62,12 @@ class BaseController<T> {
         if (Mongoose.prototype.isValidObjectId(itemIdToUpdate)) {
 
             try {
-                await this.model.findByIdAndUpdate(itemIdToUpdate, item, {new: true});
-                res.status(200).send();
+                const result = await this.model.findByIdAndUpdate(itemIdToUpdate, item, {new: true});
+                if (result !== null) {
+                    res.status(200).send();
+                } else {
+                    res.status(500).send("Item to update doesn't exist");
+                }
             } catch (error) {
                 res.status(500).send(error);
             }
@@ -77,8 +81,12 @@ class BaseController<T> {
 
         if (Mongoose.prototype.isValidObjectId(itemIdToDelete)) {
             try {
-                await this.model.findByIdAndDelete(itemIdToDelete);
-                res.status(200).send();
+                const result = await this.model.findByIdAndDelete(itemIdToDelete);
+                if (result !== null) {
+                    res.status(200).send();
+                } else {
+                    res.status(500).send("Item to delete wasn't found");
+                }
             } catch (error) {
                 res.status(500).send(error);
             }
