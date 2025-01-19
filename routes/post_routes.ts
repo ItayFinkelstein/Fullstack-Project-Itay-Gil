@@ -1,8 +1,15 @@
 import { Router } from 'express';
-import { getPosts, } from '../controllers/post';
+import postsController from '../controllers/post_controller';
 
-const postRouter = Router();
+const router = Router();
 
-postRouter.get('/', getPosts);
+router.get('/', postsController.getAll.bind(postsController));
+router.get('/:id', (req, res) => { postsController.getById(req, res) });
 
-export default postRouter;
+router.post('/', postsController.createItem.bind(postsController));
+
+router.put('/:id', (req, res) => { postsController.updateItemById(req, res) });
+
+router.delete('/:id', (req, res) => { postsController.deleteItemById(req, res) });
+
+export default router;

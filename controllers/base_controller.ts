@@ -10,21 +10,18 @@ class BaseController<T> {
     async getAll(req: Request, res: Response) {
         const ownerFilter = req.query.owner;
         const postIdFilter = req.query.postId;
+        let filterParams = {};
+        if (ownerFilter && postIdFilter) {
+            filterParams = { owner: ownerFilter, postId: postIdFilter };
+        } else if (ownerFilter) {
+            filterParams = { owner: ownerFilter };
+        } else if (postIdFilter) {
+            filterParams = { postId: postIdFilter };
+        }
 
         try {
-            if (ownerFilter && postIdFilter) {
-                const items = await this.model.find({ owner: ownerFilter, postId: postIdFilter });
-                res.status(200).send(items);
-            } else if (ownerFilter) {
-                const items = await this.model.find({ owner: ownerFilter });
-                res.status(200).send(items);
-            } else if (postIdFilter) {
-                const items = await this.model.find({ postId: postIdFilter });
-                res.status(200).send(items);
-            } else {
-                const items = await this.model.find();
-                res.status(200).send(items);
-            }
+            const items = await this.model.find(filterParams);
+            res.status(200).send(items);
         } catch (error) {
             res.status(500).send(error);
         }
@@ -62,12 +59,20 @@ class BaseController<T> {
     async updateItemById(req: Request, res: Response) {
         const itemIdToUpdate = req.params.id;
         const item = req.body;
+        if (Mongoose.prototype.isValidObjectId(itemIdToUpdate)) {
 
-        try {
-            await this.model.findOneAndUpdate({ postId: itemIdToUpdate }, item);
-            res.status(200).send();
-        } catch (error) {
-            res.status(500).send(error);
+            try {
+                const result = await this.model.findByIdAndUpdate(itemIdToUpdate, item, {new: true});
+                if (result) {
+                    res.status(200).send();
+                } else {
+                    res.status(500).send("Item to update doesn't exist");
+                }
+            } catch (error) {
+                res.status(500).send(error);
+            }
+        } else {
+            res.status(500).send("Item to update doesn't exist");
         }
     };
 
@@ -76,8 +81,12 @@ class BaseController<T> {
 
         if (Mongoose.prototype.isValidObjectId(itemIdToDelete)) {
             try {
-                await this.model.findByIdAndDelete(itemIdToDelete);
-                res.status(200).send();
+                const result = await this.model.findByIdAndDelete(itemIdToDelete);
+                if (result) {
+                    res.status(200).send();
+                } else {
+                    res.status(500).send("Item to delete wasn't found");
+                }
             } catch (error) {
                 res.status(500).send(error);
             }

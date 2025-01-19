@@ -5,6 +5,53 @@ GET http://localhost:3000/
 GET http://localhost:3000/post
 
 ###
+GET http://localhost:3000/post?owner=John
+
+###
+GET http://localhost:3000/post?owner=NonExistingOwner
+
+###
+GET http://localhost:3000/post?owner=David
+
+###
+GET http://localhost:3000/post?id=12345
+
+###
+GET http://localhost:3000/post/123
+
+###
+POST http://localhost:3000/post
+Content-Type: application/json
+
+{
+    "owner": "David",
+    "message": "Hello people"
+}
+
+###
+POST http://localhost:3000/post
+Content-Type: application/json
+
+{
+    "_id": "678ba58058ecb33d1473f93b",
+    "owner": "John",
+    "message": "Hello people"
+}
+
+###
+PUT http://localhost:3000/post/678ba58058ecb33d1473f93b
+Content-Type: application/json
+
+{
+    "_id": "678ba58058ecb33d1473f93b",
+    "owner": "John",
+    "message": "Tomorrow will be great"
+}
+
+###
+DELETE http://localhost:3000/post/678ba58058ecb33d1473f93b
+
+###
 GET http://localhost:3000/comments
 
 ###
@@ -53,7 +100,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:3000/comments/12345678
+PUT http://localhost:3000/comments/6782920ce39804cd14c2dfb0
 Content-Type: application/json
 
 {
@@ -63,7 +110,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/comments/12345
+DELETE http://localhost:3000/comments/6782920ce39804cd14c2dfb0
 
 ###
 DELETE http://localhost:3000/comments/6782920ce39804cd14c2dfb0
