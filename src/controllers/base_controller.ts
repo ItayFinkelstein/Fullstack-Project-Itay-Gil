@@ -10,21 +10,18 @@ class BaseController<T> {
     async getAll(req: Request, res: Response) {
         const ownerFilter = req.query.owner;
         const postIdFilter = req.query.postId;
+        let filterParams = {};
+        if (ownerFilter && postIdFilter) {
+            filterParams = { owner: ownerFilter, postId: postIdFilter };
+        } else if (ownerFilter) {
+            filterParams = { owner: ownerFilter };
+        } else if (postIdFilter) {
+            filterParams = { postId: postIdFilter };
+        }
 
         try {
-            if (ownerFilter && postIdFilter) {
-                const items = await this.model.find({ owner: ownerFilter, postId: postIdFilter });
-                res.status(200).send(items);
-            } else if (ownerFilter) {
-                const items = await this.model.find({ owner: ownerFilter });
-                res.status(200).send(items);
-            } else if (postIdFilter) {
-                const items = await this.model.find({ postId: postIdFilter });
-                res.status(200).send(items);
-            } else {
-                const items = await this.model.find();
-                res.status(200).send(items);
-            }
+            const items = await this.model.find(filterParams);
+            res.status(200).send(items);
         } catch (error) {
             res.status(500).send(error);
         }
