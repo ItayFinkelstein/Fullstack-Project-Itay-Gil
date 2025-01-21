@@ -116,7 +116,7 @@ describe('Comments Test', () => {
         const nonExistentId = new mongoose.Types.ObjectId().toHexString();
         const response = await request(app).put(baseUrl + '/' + nonExistentId).send(updatedComment);
         expect(response.statusCode).toBe(404);
-        expect(response.text).toBe('Item not found');
+        expect(response.text).toBe(`Item with id ${nonExistentId} not found`);
     });
 
     test('Test delete comment with invalid id', async () => {
@@ -128,6 +128,6 @@ describe('Comments Test', () => {
         const nonExistentId = new mongoose.Types.ObjectId().toHexString();
         const response = await request(app).delete(baseUrl + '/' + nonExistentId);
         expect(response.statusCode).toBe(404);
-        expect(response.text).toBe('Item not found');
+        expect(response.text).toBe(`Item with id ${nonExistentId} not found`);
     });
 });
