@@ -11,6 +11,7 @@ class BaseController<T> {
         const ownerFilter = req.query.owner;
         const postIdFilter = req.query.postId;
         let filterParams = {};
+
         if (ownerFilter && postIdFilter) {
             filterParams = { owner: ownerFilter, postId: postIdFilter };
         } else if (ownerFilter) {
@@ -29,19 +30,20 @@ class BaseController<T> {
 
     async getById(req: Request, res: Response) {
         const idToFind = req.params.id;
+
         if (Mongoose.prototype.isValidObjectId(idToFind)) {
             try {
                 const items = await this.model.findById(idToFind);
-                if (items === null) {
-                    return res.status(404).send('Item not found');
+                if (items) {
+                    res.status(200).send(items);
                 } else {
-                    return res.status(200).send(items);
+                    res.status(404).send(`Item with id ${idToFind} not found`);
                 }
             } catch (error) {
                 res.status(500).send(error);
             }
         } else {
-            return res.status(400).send("invalid ObjectId");
+            res.status(400).send("invalid ObjectId");
         }
     };
 
@@ -59,19 +61,20 @@ class BaseController<T> {
     async updateItemById(req: Request, res: Response) {
         const itemIdToUpdate = req.params.id;
         const item = req.body;
+
         if (Mongoose.prototype.isValidObjectId(itemIdToUpdate)) {
             try {
                 const updatedItem = await this.model.findByIdAndUpdate(itemIdToUpdate, item, { new: true });
-                if (!updatedItem) {
-                    return res.status(404).send('Item not found');
+                if (updatedItem) {
+                    res.status(200).send(updatedItem);
+                } else {
+                    res.status(404).send(`Item with id ${itemIdToUpdate} not found`);
                 }
-
-                res.status(200).send(updatedItem);
             } catch (error) {
                 res.status(500).send(error);
             }
         } else {
-            return res.status(400).send("invalid ObjectId");
+            res.status(400).send("invalid ObjectId");
         }
     };
 
@@ -80,12 +83,12 @@ class BaseController<T> {
 
         if (Mongoose.prototype.isValidObjectId(itemIdToDelete)) {
             try {
-                const deletedItem = await this.model.findByIdAndDelete(req.params.id);
-                if (!deletedItem) {
-                    return res.status(404).send('Item not found');
+                const deletedItem = await this.model.findByIdAndDelete(itemIdToDelete);
+                if (deletedItem) {
+                    res.status(200).send(`Item with id ${itemIdToDelete} deleted`);
+                } else {
+                    res.status(404).send(`Item with id ${itemIdToDelete} not found`);
                 }
-
-                res.status(200).send(`Item with id ${req.params.id} deleted`);
             } catch (error) {
                 res.status(500).send(error);
             }
@@ -93,7 +96,6 @@ class BaseController<T> {
             return res.status(400).send("invalid ObjectId");
         }
     };
-
 };
 
 export default BaseController;
