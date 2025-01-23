@@ -39,7 +39,7 @@ const initApp = async (): Promise<Express> => {
                 },
                 servers: [{url: "http://localhost:3000"},],
                 },
-                apis: ["./src/routes/*.ts"],
+                apis: ["./routes/*.ts"],
                 };
                 const specs = swaggerJsDoc(options);
                 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
