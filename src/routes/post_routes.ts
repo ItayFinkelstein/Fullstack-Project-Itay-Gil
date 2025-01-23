@@ -10,23 +10,27 @@ const router = Router();
  *     Post:
  *       type: object
  *       required:
- *         - title
- *         - content
+ *         - message
+ *         - owner
  *       properties:
- *         title:
+ *         _id:
  *           type: string
- *           description: The post title
- *         content:
+ *           description: The auto-generated id of the post
+ *         message:
  *           type: string
- *           description: The post content
+ *           description: The post message
+ *         owner:
+ *           type: string
+ *           description: The post owner
  *       example:
- *         title: 'My First Post'
- *         content: 'This is the content of my first post'
+ *         _id: '60d21b4667d0d8992e610c85'
+ *         message: 'This is a post message'
+ *         owner: 'John Doe'
  */
 
 /**
  * @swagger
- * /posts:
+ * /post:
  *   get:
  *     summary: Returns a list of all posts
  *     tags: [Posts]
@@ -43,7 +47,7 @@ const router = Router();
 router.get('/', postsController.getAll.bind(postsController));
 /**
  * @swagger
- * /posts/{id}:
+ * /post/{id}:
  *   get:
  *     summary: Get a post by ID
  *     tags: [Posts]
@@ -68,7 +72,7 @@ router.get('/:id', (req, res) => { postsController.getById(req, res) });
 
 /**
  * @swagger
- * /posts:
+ * /post:
  *   post:
  *     summary: Create a new post
  *     tags: [Posts]
@@ -92,7 +96,7 @@ router.post('/', postsController.createItem.bind(postsController));
 
 /**
  * @swagger
- * /posts/{id}:
+ * /post/{id}:
  *   put:
  *     summary: Update a post by ID
  *     tags: [Posts]
@@ -125,7 +129,7 @@ router.put('/:id', (req, res) => { postsController.updateItemById(req, res) });
 
 /**
  * @swagger
- * /posts/{id}:
+ * /post/{id}:
  *   delete:
  *     summary: Delete a post by ID
  *     tags: [Posts]

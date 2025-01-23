@@ -15,6 +15,13 @@ const initApp = async (): Promise<Express> => {
     return new Promise<Express>(async (resolve, reject) => {
         const app = express();
 
+        app.use((req, res, next) => {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Methods", "*");
+            res.header("Access-Control-Allow-Headers", "*");
+            next();
+          });
+          
         app.use(bodyParser.json());
         app.use('/', indexRouter);
         app.use('/post', postRouter);
@@ -39,7 +46,7 @@ const initApp = async (): Promise<Express> => {
                 },
                 servers: [{url: "http://localhost:3000"},],
                 },
-                apis: ["./routes/*.ts"],
+                apis: ["./src/routes/*.ts"],
                 };
                 const specs = swaggerJsDoc(options);
                 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
