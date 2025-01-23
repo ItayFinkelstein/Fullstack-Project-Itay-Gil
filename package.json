@@ -6,8 +6,9 @@
   "scripts": {
     "devstart": "nodemon --exec ts-node ./src/app.ts",
     "start": "tsc && node ./dist/src/app.js",
-    "test": "cp .env_test .env && jest --detectOpenHandles --forceExit --coverage --runInBand",
-    "testComments": "cp .env_test .env && jest --detectOpenHandles --forceExit --coverage comments.test.ts"
+    "test": "copy .env_test .env && jest --detectOpenHandles --forceExit --coverage --runInBand",
+    "testComments": "copy .env_test .env && jest --detectOpenHandles --forceExit --coverage comments.test.ts",
+    "testPosts": "copy .env_test .env && jest --detectOpenHandles --forceExit --coverage post.test.ts"
   },
   "author": "",
   "license": "ISC",
