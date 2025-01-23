@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
-const postSchema = new mongoose.Schema({
+export interface IPost {
+    _id?: string;
+    message: string;
+    owner: string;
+}
+const postSchema = new mongoose.Schema<IPost>({
     message: {
         type: String,
         required: true
