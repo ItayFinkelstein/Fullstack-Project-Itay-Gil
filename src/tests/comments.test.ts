@@ -28,7 +28,7 @@ beforeAll(async () => {
 
     await request(app).post("/auth/register").send(testUser);
     const response = await request(app).post("/auth/login").send(testUser);
-    testUser.token = response.body.token;
+    testUser.token = response.body.accessToken;
     testUser._id = response.body._id;
     expect(response.statusCode).toBe(200);
 });
