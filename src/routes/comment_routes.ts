@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import commentsController from '../controllers/comment';
+import commentsController from '../controllers/comment_controller';
 
-const commentsRouter = Router();
+const commentsRouter: Router = Router();
 
 commentsRouter.get("/", commentsController.getAll.bind(commentsController));
 commentsRouter.get("/:id", (req, res) => { commentsController.getById(req, res) });
