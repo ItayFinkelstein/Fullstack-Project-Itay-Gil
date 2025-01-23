@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import indexRouter from './routes/index';
 import postRouter from './routes/post_routes';
 import commentRouter from './routes/comment_routes';
+import authRouter from './routes/auth_routes';
 import mongoose from "mongoose";
 import swaggerUI from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
@@ -23,9 +24,11 @@ const initApp = async (): Promise<Express> => {
           });
           
         app.use(bodyParser.json());
+        app.use(bodyParser.urlencoded({ extended: true }));
         app.use('/', indexRouter);
         app.use('/post', postRouter);
         app.use('/comments', commentRouter);
+        app.use('/auth', authRouter);
 
         const db = mongoose.connection;
         db.on("error", (error) => console.error("Error connecting to Database: " + error));

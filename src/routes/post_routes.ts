@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import postsController from '../controllers/post_controller';
+import { authMiddleware } from "../controllers/auth_controller";
 
 const router = Router();
 
@@ -92,7 +93,7 @@ router.get('/:id', (req, res) => { postsController.getById(req, res) });
  *       500:
  *         description: Some server error
  */
-router.post('/', postsController.createItem.bind(postsController));
+router.post('/', authMiddleware, postsController.createItem.bind(postsController));
 
 /**
  * @swagger
@@ -125,7 +126,7 @@ router.post('/', postsController.createItem.bind(postsController));
  *       500:
  *         description: Some server error
  */
-router.put('/:id', (req, res) => { postsController.updateItemById(req, res) });
+router.put('/:id', authMiddleware, (req, res) => { postsController.updateItemById(req, res) });
 
 /**
  * @swagger
@@ -146,6 +147,6 @@ router.put('/:id', (req, res) => { postsController.updateItemById(req, res) });
  *       404:
  *         description: Post not found
  */
-router.delete('/:id', (req, res) => { postsController.deleteItemById(req, res) });
+router.delete('/:id', authMiddleware, (req, res) => { postsController.deleteItemById(req, res) });
 
 export default router;

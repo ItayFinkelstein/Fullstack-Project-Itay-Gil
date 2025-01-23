@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import commentsController from '../controllers/comment_controller';
+import { authMiddleware } from "../controllers/auth_controller";
 
 const commentsRouter: Router = Router();
 
@@ -98,7 +99,7 @@ commentsRouter.get("/:id", (req, res) => { commentsController.getById(req, res) 
  *       500:
  *         description: Some server error
  */
-commentsRouter.post("/", commentsController.createItem.bind(commentsController));
+commentsRouter.post("/", authMiddleware, commentsController.createItem.bind(commentsController));
 
 /**
  * @swagger
@@ -131,7 +132,7 @@ commentsRouter.post("/", commentsController.createItem.bind(commentsController))
  *       500:
  *         description: Some server error
  */
-commentsRouter.put("/:id", (req, res) => { commentsController.updateItemById(req, res) });
+commentsRouter.put("/:id", authMiddleware, (req, res) => { commentsController.updateItemById(req, res) });
 
 /**
  * @swagger
@@ -152,6 +153,6 @@ commentsRouter.put("/:id", (req, res) => { commentsController.updateItemById(req
  *       404:
  *         description: Comment not found
  */
-commentsRouter.delete("/:id", (req, res) => { commentsController.deleteItemById(req, res) });
+commentsRouter.delete("/:id", authMiddleware, (req, res) => { commentsController.deleteItemById(req, res) });
 
 export default commentsRouter;
