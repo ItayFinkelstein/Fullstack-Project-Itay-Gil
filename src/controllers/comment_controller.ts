@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import commentModel from "../models/comment";
 import BaseController from "./base_controller";
 
