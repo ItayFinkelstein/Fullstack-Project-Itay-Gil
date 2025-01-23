@@ -1,6 +1,6 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
-import commentsModel, { IComment } from '../models/comment';
+import commentsModel, { IComment } from '../models/commentModel';
 import testCommentsArray from './comments.json';
 import { Express } from 'express';
 import initApp from '../server';
@@ -10,9 +10,27 @@ let app: Express;
 const testComments: IComment[] = testCommentsArray;
 const baseUrl = '/comments';
 
+type User = {
+    email: string;
+    password: string;
+    token?: string;
+    _id?: string;
+}
+
+const testUser: User = {
+    email: "itayf@gmail.com",
+    password: "898989",
+}
+
 beforeAll(async () => {
     app = await initApp();
     await commentsModel.deleteMany();
+
+    await request(app).post("/auth/register").send(testUser);
+    const response = await request(app).post("/auth/login").send(testUser);
+    testUser.token = response.body.token;
+    testUser._id = response.body._id;
+    expect(response.statusCode).toBe(200);
 });
 
 afterAll(async () => {
@@ -28,11 +46,12 @@ describe('Comments Test', () => {
 
     test('Test create new comment', async () => {
         for (let comment of testComments) {
-            const response = await request(app).post(baseUrl).send(comment);
+            const response = await request(app).post(baseUrl)
+                .set("authorization", "JWT " + testUser.token)
+                .send(comment);
             expect(response.statusCode).toBe(201);
             expect(response.body.message).toBe(comment.message);
             expect(response.body.postId).toBe(comment.postId);
-            expect(response.body.owner).toBe(comment.owner);
             comment._id = response.body._id;
         }
 
@@ -60,20 +79,20 @@ describe('Comments Test', () => {
     });
 
     test('Test filter comments by owner', async () => {
-        const response = await request(app).get(baseUrl + '?owner=' + testComments[0].owner);
+        const response = await request(app).get(baseUrl + '?owner=' + testUser._id);
         expect(response.statusCode).toBe(200);
-        expect(response.body.length).toBe(1);
+        expect(response.body.length).toBe(3);
     });
 
     test('Test filter comments by owner and postId', async () => {
-        const response = await request(app).get(baseUrl + '?owner=' + testComments[0].owner + '&postId=' + testComments[0].postId);
+        const response = await request(app).get(baseUrl + '?owner=' + testUser._id + '&postId=' + testComments[0].postId);
         expect(response.statusCode).toBe(200);
-        expect(response.body.length).toBe(1);
+        expect(response.body.length).toBe(2);
     });
 
     test('Test update comment', async () => {
         const updatedComment = { ...testComments[0], message: 'Updated message' };
-        const response = await request(app).put(baseUrl + '/' + testComments[0]._id).send(updatedComment);
+        const response = await request(app).put(baseUrl + '/' + testComments[0]._id).set("authorization", "JWT " + testUser.token).send(updatedComment);
         expect(response.statusCode).toBe(200);
 
         const responseGet = await request(app).get(baseUrl + '/' + testComments[0]._id);
@@ -82,7 +101,7 @@ describe('Comments Test', () => {
     });
 
     test('Test delete comment', async () => {
-        const response = await request(app).delete(baseUrl + '/' + testComments[0]._id);
+        const response = await request(app).delete(baseUrl + '/' + testComments[0]._id).set("authorization", "JWT " + testUser.token);
         expect(response.statusCode).toBe(200);
 
         const responseGet = await request(app).get(baseUrl + '/' + testComments[0]._id);
@@ -90,10 +109,11 @@ describe('Comments Test', () => {
     });
 
     test('Test create new comment with invalid data', async () => {
-        const response = await request(app).post(baseUrl).send({
-            message: 'invalid comment!',
-            postId: ''
-        });
+        const response = await request(app).post(baseUrl).set("authorization", "JWT " + testUser.token)
+            .send({
+                message: 'invalid comment!',
+                postId: ''
+            });
         expect(response.statusCode).toBe(500);
     });
 
@@ -103,30 +123,31 @@ describe('Comments Test', () => {
     });
 
     test('Test update comment with invalid id', async () => {
-        const response = await request(app).put(baseUrl + '/invalidId').send({
-            message: 'Updated message',
-            owner: 'Updated owner',
-            postId: 'Updated postId'
-        });
+        const response = await request(app).put(baseUrl + '/invalidId').set("authorization", "JWT " + testUser.token)
+            .send({
+                message: 'Updated message',
+                owner: 'Updated owner',
+                postId: 'Updated postId'
+            });
         expect(response.statusCode).toBe(400);
     });
 
     test('Test update comment when item not found', async () => {
         const updatedComment = { ...testComments[0], message: 'Updated message' };
         const nonExistentId = new mongoose.Types.ObjectId().toHexString();
-        const response = await request(app).put(baseUrl + '/' + nonExistentId).send(updatedComment);
+        const response = await request(app).put(baseUrl + '/' + nonExistentId).set("authorization", "JWT " + testUser.token).send(updatedComment);
         expect(response.statusCode).toBe(404);
         expect(response.text).toBe(`Item with id ${nonExistentId} not found`);
     });
 
     test('Test delete comment with invalid id', async () => {
-        const response = await request(app).delete(baseUrl + '/invalidId');
+        const response = await request(app).delete(baseUrl + '/invalidId').set("authorization", "JWT " + testUser.token);
         expect(response.statusCode).toBe(400);
     });
 
     test('Test delete comment when item not found', async () => {
         const nonExistentId = new mongoose.Types.ObjectId().toHexString();
-        const response = await request(app).delete(baseUrl + '/' + nonExistentId);
+        const response = await request(app).delete(baseUrl + '/' + nonExistentId).set("authorization", "JWT " + testUser.token);
         expect(response.statusCode).toBe(404);
         expect(response.text).toBe(`Item with id ${nonExistentId} not found`);
     });

@@ -20,8 +20,18 @@ GET http://localhost:3000/post?id=12345
 GET http://localhost:3000/post/123
 
 ###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "itay.f@gmail.com",
+    "password": "top_secret"
+}
+
+###
 POST http://localhost:3000/post
 Content-Type: application/json
+Authorization: jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NzkyODc5MjYxY2VmY2JkOTJlMWJjNjQiLCJpYXQiOjE3Mzc2NTg2MjAsImV4cCI6MTczNzc0NTAyMH0.XyYNmoKILj_8P1NSlyMKCPoxjL7NNupDexpsrbZg_B8
 
 {
     "owner": "David",
@@ -35,7 +45,8 @@ Content-Type: application/json
 {
     "_id": "678ba58058ecb33d1473f93b",
     "owner": "John",
-    "message": "Hello people"
+    "message": "Hello people",
+    "authorization": "jwt 882b402c4a872bc7c53355da340131b4a68aed0bcbd05270f77400c27707bf65b65d14aa2e88f41fc683f61c50fad47258388cb8e34d9f0dd6a344ac4af35333"
 }
 
 ###
